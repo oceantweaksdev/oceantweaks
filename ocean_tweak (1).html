@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>OceanTweak</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r121/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.net.min.js"></script>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: 'Inter', sans-serif;
+      }
+      body {
+        background: #000;
+        color: white;
+        overflow-x: hidden;
+      }
+      header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1rem 2rem;
+        background: #005fa3;
+        position: sticky;
+        top: 0;
+        z-index: 100;
+      }
+      .logo {
+        font-weight: 700;
+        font-size: 1.4rem;
+        color: white;
+      }
+      nav {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+      }
+      nav a {
+        color: white;
+        text-decoration: none;
+        font-size: 0.95rem;
+        padding: 0.4rem 0.75rem;
+        border-radius: 8px;
+        transition: background 0.3s;
+      }
+      .play-button {
+        padding: 0.4rem 1rem;
+        border: 1px solid white;
+        border-radius: 8px;
+        background: transparent;
+        color: white;
+        font-weight: 600;
+        cursor: pointer;
+      }
+      .hero {
+        text-align: center;
+        padding: 6rem 1rem 3rem;
+        position: relative;
+        z-index: 1;
+        min-height: 70vh;
+      }
+      .hero h1 {
+        font-size: 3rem;
+        font-weight: 700;
+        line-height: 1.2;
+      }
+      .hero p {
+        color: #aaa;
+        margin-top: 1rem;
+        font-size: 1.1rem;
+      }
+      .hero button {
+        margin-top: 2rem;
+        padding: 0.75rem 1.5rem;
+        border: none;
+        border-radius: 8px;
+        background: white;
+        color: black;
+        font-weight: 600;
+        cursor: pointer;
+      }
+      .section-dark {
+        background: rgba(0, 0, 0, 0.6);
+        padding: 4rem 2rem;
+        text-align: center;
+      }
+      .section-dark h2 {
+        font-size: 2rem;
+        margin-bottom: 1rem;
+      }
+      .plans {
+        display: flex;
+        gap: 2rem;
+        justify-content: center;
+        padding: 2rem;
+        border-radius: 12px;
+        position: relative;
+        background: url('/mnt/data/012fbffb-6467-4576-8649-bcbf0b9163ec.png') no-repeat center center;
+        background-size: cover;
+      }
+      .plan {
+        background: rgba(0, 0, 0, 0.85);
+        border-radius: 12px;
+        padding: 2rem;
+        width: 280px;
+        border: 2px solid #333;
+        position: relative;
+      }
+      .plan.highlight {
+        border-color: #3498db;
+      }
+      .plan h3 {
+        font-size: 1.5rem;
+        margin-bottom: 1rem;
+      }
+      .plan p.price {
+        font-size: 2rem;
+        margin: 1rem 0;
+      }
+      .plan ul {
+        list-style: none;
+        text-align: left;
+        margin-top: 1rem;
+      }
+      .plan ul li {
+        margin-bottom: 0.5rem;
+        font-size: 0.95rem;
+      }
+      .download-button {
+        display: inline-block;
+        margin-top: 1rem;
+        padding: 0.6rem 1.2rem;
+        background-color: #3498db;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-weight: bold;
+        text-decoration: none;
+        transition: transform 0.2s ease, background-color 0.2s ease;
+      }
+      .download-button:hover {
+        background-color: #217dbb;
+        transform: scale(1.05);
+      }
+      .faq {
+        padding: 4rem 2rem;
+        text-align: center;
+      }
+      .faq h2 {
+        font-size: 2rem;
+        margin-bottom: 1rem;
+      }
+      #vanta-bg {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+        z-index: 0;
+      }
+      .hero-overlay {
+        position: relative;
+        z-index: 2;
+      }
+      .tweak-section {
+        position: relative;
+        padding: 4rem 2rem;
+        border-radius: 12px;
+        margin: 2rem;
+        overflow: hidden;
+      }
+      #vanta-tweak {
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 100%;
+        width: 100%;
+        z-index: 0;
+      }
+      .tweak-content {
+        position: relative;
+        z-index: 2;
+        text-align: left;
+      }
+      .tweak-content h2 {
+        text-align: center;
+        margin-bottom: 1.5rem;
+      }
+      .tweak-content p {
+        margin-bottom: 0.5rem;
+        font-family: monospace;
+      }
+      .tos-section {
+        background: rgba(0, 0, 0, 0.85);
+        border: 2px solid #3498db;
+        border-radius: 12px;
+        padding: 2rem;
+        margin: 2rem;
+      }
+      .tos-section h2 {
+        text-align: center;
+        margin-bottom: 1rem;
+      }
+      .tos-section p {
+        margin-bottom: 0.5rem;
+        font-size: 0.95rem;
+        line-height: 1.6;
+      }
+      footer {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        background: #000;
+        padding: 0.5rem 1rem;
+        font-size: 0.75rem;
+        color: #888;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="vanta-bg"></div>
+    <header>
+      <div class="logo">OceanTweak</div>
+      <nav>
+        <a class="play-button" href="#tweak">INFO</a>
+        <a class="play-button" href="#terms">Terms of Service</a>
+      </nav>
+    </header>
+
+    <section class="hero">
+      <div class="hero-overlay">
+        <h1>Introducing OceanTweak</h1>
+        <p>Do you have low/end pc? We got you with our tweak you will boost your perfomance by far!</p>
+        <button onclick="document.getElementById('standard').scrollIntoView({ behavior: 'smooth' });">Get OceanTweak</button>
+      </div>
+    </section>
+
+    <section class="section-dark">
+      <h2>Plans & Pricing</h2>
+      <div class="plans">
+        <div class="plan" id="standard">
+          <h3>Standard</h3>
+          <p class="price">Free</p>
+          <ul>
+            <li>✅ Ottimizzazione base</li>
+            <li>✅ Tweaks compatibilità</li>
+            <li>✅ Debloat leggero</li>
+            <li>✅ 0 delay</li>
+            <li>✅ 24/7 support</li>
+            <li>✅ +20fps Assicurati</li>
+          </ul>
+          <a class="download-button" href="https://www.swisstransfer.com/d/ce5ba7b9-a694-403c-8664-cbc399582a70" target="_blank">Download</a>
+        </div>
+        <div class="plan highlight">
+          <h3>Pro (cooming soon)</h3>
+          <p class="price">€14.99</p>
+          <ul>
+            <li>🚀 Tutti i tweak disponibili</li>
+            <li>🔧 Supporto personalizzato</li>
+            <li>🧠 Aggiornamenti automatici</li>
+            <li>✅ Tweak su misura</li>
+            <li>✅ BIOS tweak</li>
+            <li>✅ +40fps</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="tweak-section" id="tweak">
+      <div id="vanta-tweak"></div>
+      <div class="tweak-content">
+        <h2>Cosa trovi nel nostro tweak?</h2>
+        <p>[1] Tweaks Generali</p>
+        <p>[2] Windows Tweaks</p>
+        <p>[3] Pulizia PC</p>
+        <p>[4] RAM Tweaks</p>
+        <p>[5] CPU Tweaks</p>
+        <p>[6] GPU Tweaks</p>
+        <p>[7] USB Tweaks</p>
+        <p>[8] Mouse & Tastiera</p>
+        <p>[9] Tweaks Alimentazione</p>
+        <p>[10] Debloat</p>
+        <p>[11] Tweaks Disco (HDD/SSD)</p>
+        <p>[12] Fix File Corrotti</p>
+        <p>[P] Usa Punto Di Ripristino</p>
+        <p style="margin-top: 1rem;">E altre 30 opzioni tutto questo solo per la versione gratuita!</p>
+      </div>
+    </section>
+
+    <section class="tos-section" id="terms">
+      <h2>Terms of Service</h2>
+      <p>1. Utilizzando il sito oceantweak, l’utente accetta integralmente i presenti Termini di Servizio. Se non sei d’accordo, ti preghiamo di non utilizzare il Sito.</p>
+      <p>2. Modifiche ai Termini: Possiamo aggiornare i termini in qualsiasi momento. Le modifiche si applicano non appena pubblicate.</p>
+      <p>3. Servizi Offerti: Il Sito fornisce tweak e strumenti per ottimizzare l’esperienza utente, personalizzare e migliorare performance.</p>
+      <p>4. Conta degli Utenti: Alcuni contenuti possono richiedere registrazione. L’utente è responsabile della veridicità dei dati.</p>
+      <p>5. Uso Consentito: Scaricare contenuti per uso personale è concesso. Vietata la redistribuzione o rivendita.</p>
+      <p>6. Proprietà Intellettuale: I contenuti sono proprietà esclusiva di oceantweak o dei rispettivi titolari.</p>
+      <p>7. Contenuti degli Utenti: Inviando feedback o suggerimenti, l’utente concede una licenza gratuita e internazionale a oceantweak.</p>
+    </section>
+
+    <footer>
+      © Copyright oceantweak. All Rights Reserved — Developed by oceanteam.
+    </footer>
+
+    <script>
+      VANTA.NET({
+        el: "#vanta-bg",
+        mouseControls: true,
+        touchControls: true,
+        gyroControls: false,
+        minHeight: 200.00,
+        minWidth: 200.00,
+        scale: 1.00,
+        scaleMobile: 1.00,
+        color: 0x00ccff,
+        backgroundColor: 0x000000
+      });
+
+      VANTA.NET({
+        el: "#vanta-tweak",
+        mouseControls: true,
+        touchControls: true,
+        gyroControls: false,
+        minHeight: 200.00,
+        minWidth: 200.00,
+        scale: 1.00,
+        scaleMobile: 1.00,
+        color: 0x0074D9,
+        backgroundColor: 0x001f3f
+      });
+    </script>
+  </body>
+</html>
